@@ -4,7 +4,7 @@ const User = require("../models/user");
 const authRouter = express.Router();
 const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
-const Strings = require("../core/strings");
+const strings = require("../core/strings");
 
 // Sign Up
 authRouter.post("/api/signup", async (req, res) => {
@@ -50,7 +50,7 @@ authRouter.post("/api/signin", async (req, res) => {
       return res.status(400).json({ msg: "Incorrect password." });
     }
 
-    const token = jwt.sign({ id: user._id },  Strings.secretKey);
+    const token = jwt.sign({ id: user._id },  strings.secretKey);
     res.json({ token, ...user._doc });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -61,7 +61,7 @@ authRouter.post("/tokenIsValid", async (req, res) => {
   try {
     const token = req.header("x-auth-token");
     if (!token) return res.json(false);
-    const verified = jwt.verify(token, Strings.secretKey);
+    const verified = jwt.verify(token, strings.secretKey);
     if (!verified) return res.json(false);
 
     const user = await User.findById(verified.id);
