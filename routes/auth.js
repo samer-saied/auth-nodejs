@@ -1,7 +1,7 @@
 const express = require("express");
+const authRouter = express.Router();
 const bcryptjs = require("bcryptjs");
 const User = require("../models/user");
-const authRouter = express.Router();
 const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
 const strings = require("../core/strings");
@@ -10,30 +10,39 @@ const strings = require("../core/strings");
 authRouter.post("/api/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res
-        .status(400)
-        .json({ msg: "User with same email already exists!" });
+    if (email && name && password){
+      const re =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/i;
+      if(password.match(re)){
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+          return res
+            .status(400)
+            .json({ error: "User with same email already exists!" });
+        }
+        const hashedPassword = await bcryptjs.hash(password, 8);
+        let user = new User({
+          email,
+          password: hashedPassword,
+          name,
+        });
+        user = await user.save();
+        user.password = "Not shown"
+        const token = jwt.sign({ id: user._id },  strings.secretKey);
+        res.status(200).json({ token, ...user._doc });
+      }else{
+        res.status(500).json({ error: "Minimum eight characters, at least one letter, one number and one special character" });
+      }
+    }else{
+      res.status(500).json({ error: "Email , password , username is required" });
     }
 
-    const hashedPassword = await bcryptjs.hash(password, 8);
-
-    let user = new User({
-      email,
-      password: hashedPassword,
-      name,
-    });
-    user = await user.save();
-    res.json(user);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
 
 // Sign In
-
 authRouter.post("/api/signin", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -57,6 +66,7 @@ authRouter.post("/api/signin", async (req, res) => {
   }
 });
 
+// token Is Valid
 authRouter.post("/tokenIsValid", async (req, res) => {
   try {
     const token = req.header("x-auth-token");
@@ -73,10 +83,19 @@ authRouter.post("/tokenIsValid", async (req, res) => {
 });
 
 // get user data
-authRouter.get("/", auth, async (req, res) => {
+authRouter.get("/profile/:id", auth, async (req, res) => {
+ try {
   const user = await User.findById(req.user);
-  user.password = "Not valid"
-  res.json({ ...user._doc , token: req.token });
+  if(user._id == req.params.id){
+    user.password = "Not Shown"
+    res.json({ ...user._doc , token: req.token });
+  }else{
+    res.status(500).json({error:"Not allowed"})
+  }
+ } catch (error) {
+  res.status(500).json({ error: error.message });
+ }
+ 
 });
 
 module.exports = authRouter;
