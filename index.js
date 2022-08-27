@@ -28,9 +28,18 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, '/uploads')))
 
 
+// const logErrors = (err, req, res, next) =>{
+//   console.error('\x1b[31m', err) // adding some color to our logs
+//   const status = err.status || 400
+//   res.status(status).send(err.message)
+// }
+
 app.use(authRouter);
 app.use(imageRouter);
+// app.use(logErrors)
 
+
+// Database uri 
 const DB =
  "mongodb+srv://samersaied:"+strings.passwordDB+"@cluster0.uxsp7w2.mongodb.net/?retryWrites=true&w=majority";
 mongoose
@@ -42,6 +51,8 @@ mongoose
     console.log(e);
   });
 
+
+// Server Liston
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on PORT ${PORT}`);
 });
