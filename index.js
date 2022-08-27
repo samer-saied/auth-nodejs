@@ -5,14 +5,23 @@ const strings = require("./core/strings");
 const authRouter = require("./routes/auth");
 const imageRouter = require("./routes/upload-image");
 const path = require('path')
+const morgan = require('morgan')
+
 
 const PORT = process.env.PORT || 3000;
-const app = express();
 
+// Express App - JSON
+const app = express();
 app.use(express.json());
+
+// Logger NodeJS
+app.use(morgan('combined'))
+
 // app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('uploads'));
+
+// view engine ejs
 app.set('view engine', 'ejs');
 
 // Serve "static" 
