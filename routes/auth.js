@@ -11,8 +11,8 @@ const regexCode = require("../core/regex");
 authRouter.post("/api/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    if(name && email && password){
-      if(password.match(regexCode.regexPass)){
+    if (name && email && password) {
+      if (password.match(regexCode.regexPass)) {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
           return res
@@ -27,18 +27,18 @@ authRouter.post("/api/signup", async (req, res) => {
         });
         user = await user.save();
         userTemp = user._doc;
-        userTemp['password']= "hidden"
-        const token = jwt.sign({ id: user._id },  strings.secretKey);
-        res.status(200).json({ data: {...userTemp}, token :token});
-      }else{
+        userTemp['password'] = "hidden"
+        const token = jwt.sign({ id: user._id }, strings.secretKey);
+        res.status(200).json({ data: { ...userTemp }, token: token });
+      } else {
         res.status(500).json({ error: "Minimum eight characters, at least one letter, one number and one special character" });
       }
-   
-    }else{
+
+    } else {
       res.status(400).json({ error: "Please enter required data..." });
 
     }
-   
+
 
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -62,9 +62,9 @@ authRouter.post("/api/signin", async (req, res) => {
       return res.status(400).json({ msg: "Incorrect password." });
     }
 
-    const token = jwt.sign({ id: user._id },  strings.secretKey);
+    const token = jwt.sign({ id: user._id }, strings.secretKey);
     userTemp = user._doc;
-    userTemp['password']= "hidden"
+    userTemp['password'] = "hidden"
     res.json({ token, ...userTemp });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -89,18 +89,18 @@ authRouter.post("/tokenIsValid", async (req, res) => {
 
 // get user data
 authRouter.get("/profile/:id", auth, async (req, res) => {
- try {
-  const user = await User.findById(req.user);
-  if(user._id == req.params.id){
-    user.password = "hidden"
-    res.json({ ...user._doc , token: req.token });
-  }else{
-    res.status(500).json({error:"Not allowed"})
+  try {
+    const user = await User.findById(req.user);
+    if (user._id == req.params.id) {
+      user.password = "hidden"
+      res.json({ ...user._doc, token: req.token });
+    } else {
+      res.status(500).json({ error: "Not allowed" })
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
- } catch (error) {
-  res.status(500).json({ error: error.message });
- }
- 
+
 });
 
 module.exports = authRouter;
