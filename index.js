@@ -1,3 +1,4 @@
+const bodyParser = require("body-parser");
 const express = require("express");
 const mongoose = require("mongoose");
 const strings = require("./core/strings");
@@ -8,6 +9,15 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(express.json());
+// app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static('uploads'));
+app.set('view engine', 'ejs');
+
+// Serve "static" 
+app.use(express.static('uploads'))
+
+
 app.use(authRouter);
 app.use(imageRouter);
 
@@ -23,5 +33,5 @@ mongoose
   });
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`connected at port ${PORT}`);
+  console.log(`Server is running on PORT ${PORT}`);
 });
