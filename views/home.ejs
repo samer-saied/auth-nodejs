@@ -1,0 +1,53 @@
+<%- include('header.ejs') -%>
+
+    <%- include('navbar.ejs') -%>
+        <div class="container text-center">
+            <h1>Users List</h1>
+            <h1>
+                Total :<%= users.length %>
+            </h1>
+            <div class="row justify-content-center">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">avatar</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">isAdmin</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (let i=0 ; i < users.length ; i++){ %>
+                                <tr>
+                                    <th scope="row justify-content-center">
+                                        <%= i+1 %>
+                                    </th>
+                                    <td>
+                                        <div class="text-center">
+                                            <img src="https://images.unsplash.com/photo-1663550910347-0ae0b3fb636e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+                                                style="width:50px ; height:50px ; border-radius: 50% ;" alt="...">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <%= users[i].name %>
+                                    </td>
+                                    <td>
+                                        <%= users[i].email %>
+                                    </td>
+                                    <td>
+                                        <%= users[i].isAdmin %>
+                                    </td>
+                                </tr>
+                                <% }; %>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+        <%- include('footer.ejs') -%>

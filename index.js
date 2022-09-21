@@ -5,7 +5,8 @@ const strings = require("./core/strings");
 const authRouter = require("./routes/auth");
 const imageRouter = require("./routes/upload-image");
 const path = require('path')
-const morgan = require('morgan')
+const morgan = require('morgan');
+const productRouter = require("./routes/products");
 
 
 const PORT = process.env.PORT || 3000;
@@ -23,6 +24,7 @@ app.use(express.static('uploads'));
 
 // view engine ejs
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // Serve "static" 
 app.use(express.static(path.join(__dirname, '/uploads')))
@@ -33,9 +35,11 @@ app.use(express.static(path.join(__dirname, '/uploads')))
 //   const status = err.status || 400
 //   res.status(status).send(err.message)
 // }
-
+app.use(productRouter);
 app.use(authRouter);
 app.use(imageRouter);
+
+
 // app.use(logErrors)
 
 

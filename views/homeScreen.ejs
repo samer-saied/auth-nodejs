@@ -1,0 +1,32 @@
+<%- include('header.ejs') -%>
+
+    <%- include('navbar.ejs') -%>
+        <div class="container text-center">
+            <h1>Users List</h1>
+            <h1>
+                Total :<%= users.length %>
+            </h1>
+            <div class="row justify-content-center">
+
+                <% users.forEach((user)=>{ %>
+                    <div class="col-auto mb-3">
+                        <div class="card" style="width: 18rem; ">
+                            <img src="https://images.unsplash.com/photo-1663550910347-0ae0b3fb636e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+                                class="card-img-top" style="height: 150px;" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <%= user.name %>
+                                </h5>
+                                <p class="card-text">
+                                    <%= user.email %>
+                                </p>
+                                <a href="#" class="btn btn-dark">Get more info</a>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+            </div>
+
+        </div>
+
+        <%- include('footer.ejs') -%>
